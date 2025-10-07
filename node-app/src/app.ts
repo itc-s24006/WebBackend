@@ -20,7 +20,11 @@ console.log("server start!")
 // createServer の処理
 async function getFromClient(req: http.IncomingMessage, res: http.ServerResponse) {
     // pugを読み込んでHTMLに変換
-    const content = pug.renderFile('./index.pug')
+    const content = pug.renderFile('./index.pug', {
+        //　renderFile()の第２引数で、テンプレートに渡す変数をオブジェクトで指定
+        title: 'Indexページ',
+        content: 'これはテンプレートを使ったサンプルページです。'
+    })
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
     res.write(content)
     res.end()
