@@ -20,6 +20,13 @@ const server = http.createServer(getFromClient)
 server.listen(3210)
 console.log("server start!")
 
+const data = {
+    'Taro': '09-999-999',
+    'Hanako': '080-888-888',
+    'sachiko': '070-777-777',
+    'Ichiro': '060-666-666'
+}
+
 // ここまでメインプログラム＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 
@@ -51,6 +58,8 @@ async function response_index(req: http.IncomingMessage, res: http.ServerRespons
     const content = index_template({
         title: 'Index',
         content: msg,
+        //↓data: data と同じ意味　変数の名前と値が同じ場合は省略できる
+        data
     })
     res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
     res.write(content)
