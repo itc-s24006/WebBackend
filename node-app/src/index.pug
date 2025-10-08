@@ -12,5 +12,12 @@ html(lang="ja")
             h1(class='text-5xl/14 font-light mb-4')= title
         main
             p= content
-            .mt-2
-                a(href="/other" class="font-medium text-blue-600 dark:text-blue-500 hover:underline") Other Page に移動 >>
+            .w-full.mt-4
+                form(method='post' action='/other' class='mx-auto')
+                    .mb-4
+                        input(type='text' name='msg' class=`shadow appearance-none border rounded w-full py-2 px-3
+                            leading-tight focus:outline-none focus:shadow-outline`)
+                    button(type='submit' class=`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4
+                        focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto
+                        px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
+                        dark:focus:ring-blue-800`) Click

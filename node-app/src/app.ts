@@ -2,7 +2,7 @@
 import http from "node:http"
 import pug from 'pug'
 import url from 'node:url'
-import fs from 'node:fs/promises'
+import qs from'node:querystring'
 
 /*
 async/awaitを使うと、処理がすこしシンプルになるし、try/catchでエラーハンドリングもできる。
@@ -11,7 +11,6 @@ async/awaitを使うと、処理がすこしシンプルになるし、try/catch
 // レンダリング用のテンプレートをコンパイル
 const index_template = pug.compileFile('./index.pug')
 const other_template = pug.compileFile('./other.pug')
-const style_css = await fs.readFile('./style.css', 'utf-8')
 
 // httpモジュールをインポート
 // createServer()メソッドでサーバーを作成
@@ -30,34 +29,72 @@ async function getFromClient(req: http.IncomingMessage, res: http.ServerResponse
 
     // ルーティング    どのファイルにアクセスしたかで処理を分けること
     switch (url_parts.pathname) {
-        case '/': {
-            //Index(トップページ)にアクセスがきたときの処理
-            const content = index_template({
-                title: 'Indexページ',
-                content: 'これはテンプレートを使ったサンプルページです。',
-            })
-            res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
-            res.write(content)
-            res.end()
+        case '/':
+            await response_index(req, res)
             break
-        }
 
-        case '/other': {
-            //Index(トップページ)にアクセスがきたときの処理
-            const content = other_template({
-                title: 'Otherページ',
-                content: 'これは新しく用意したページです。',
-            })
-            res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
-            res.write(content)
-            res.end()
+        case '/other':
+            await response_other(req, res)
             break
-        }
 
-        default :
+        default: {
             // 想定していないパスへのアクセスが来たとき対処
             res.writeHead(404, {'Content-Type': 'text/plain'})
             res.end('no page...')
             break
+        }
+    }
+}
+
+async function response_index(req: http.IncomingMessage, res: http.ServerResponse) {
+    let msg = 'これは Index ページです。'
+    const content = index_template({
+        title: 'Index',
+        content: msg,
+    })
+    res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
+    res.write(content)
+    res.end()
+}
+
+async function response_other(req: http.IncomingMessage, res: http.ServerResponse) {
+    let msg = 'これは Other ページです。'
+
+    if (req.method === 'POST') {
+        const post_data = await (new Promise<qs.ParsedUrlQuery>((resolve, reject) => {
+            // bodyは空にしておいて、
+            let body = ''
+            // data受信のたびにbodyに追加していく
+            req.on('data', (chunk) => {
+                body += chunk
+            })
+            // data受信が終わるとparseしてresolve関数を呼び出す。
+            // Promiseの中で処理が成功したらresolve、失敗したらrejectを使う。
+            req.on('end', () => {
+                try {
+                    resolve(qs.parse(body))
+                } catch (e) {
+                    console.error(e)
+                    reject(e)
+                }
+            })
+        }))
+        msg += `あなたは「${post_data.msg}」と書きました。`
+        const content = other_template({
+            title: 'Other',
+            content: msg,
+        })
+        res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
+        res.write(content)
+        res.end()
+    } else {
+        // POST 以外のアクセス
+        const content = other_template({
+            title: 'Other',
+            content: 'ページがありません。',
+        })
+        res.writeHead(404, {'Content-Type': 'text/html; charset=UTF-8'})
+        res.write(content)
+        res.end()
     }
 }
