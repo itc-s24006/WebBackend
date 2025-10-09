@@ -20,12 +20,9 @@ const server = http.createServer(getFromClient)
 server.listen(3210)
 console.log("server start!")
 
-const data = [
-    {id: 1, name: 'Taro', number: '09-999-999'},
-    {id: 2, name: 'Hanako', number: '080-888-888'},
-    {id: 3, name: 'Sachiko', number: '070-777-777'},
-    {id: 4, name: 'Ichiro', number: '060-666-666'},
-]
+const data = {
+    msg: 'no message...'
+}
 
 // ここまでメインプログラム＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
@@ -54,16 +51,20 @@ async function getFromClient(req: http.IncomingMessage, res: http.ServerResponse
 }
 
 async function response_index(req: http.IncomingMessage, res: http.ServerResponse) {
-    let msg = 'これは Index ページです。'
-    const content = index_template({
-        title: 'Index',
-        content: msg,
-        //↓data: data と同じ意味　変数の名前と値が同じ場合は省略できる
-        data
-    })
-    res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
-    res.write(content)
-    res.end()
+    // POSTでアクセスされたかの判定
+    if (req.method === 'POST') {
+        const post_date = await parse_body(req)
+        data.msg = post_date.msg as string
+
+        // リダイレクトする
+        res.writeHead(302, 'Found', {
+            'Location':'/'
+            // この際自動的に必ずgetでアクセスされる
+        })
+        res.end()
+    }else {
+        write_index(req, res)
+    }
 }
 
 async function response_other(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -106,4 +107,28 @@ async function response_other(req: http.IncomingMessage, res: http.ServerRespons
         res.write(content)
         res.end()
     }
+}
+
+function parse_body(req: http.IncomingMessage): Promise<qs.ParsedUrlQuery> {
+    return new Promise((resolve, reject) => {
+        let body = ''
+        req.on('data', (chunk) => {
+            body += chunk
+        })
+        req.on('end', () => {
+            resolve(qs.parse(body))
+        })
+    })
+}
+
+// POST以外のとき、index.pugを表示する関数
+function write_index(req: http.IncomingMessage, res: http.ServerResponse) {
+    const content = index_template({
+        title: 'Index',
+        content: '※伝言を表示します。',
+        data
+    })
+    res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
+    res.write(content)
+    res.end()
 }
