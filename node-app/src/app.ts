@@ -56,6 +56,8 @@ async function response_index(req: http.IncomingMessage, res: http.ServerRespons
         const post_date = await parse_body(req)
         data.msg = post_date.msg as string
 
+        setCookie('msg', data.msg, res)
+
         // リダイレクトする
         res.writeHead(302, 'Found', {
             'Location':'/'
@@ -123,12 +125,36 @@ function parse_body(req: http.IncomingMessage): Promise<qs.ParsedUrlQuery> {
 
 // POST以外のとき、index.pugを表示する関数
 function write_index(req: http.IncomingMessage, res: http.ServerResponse) {
+    const cookie_data = getCookie(req)
     const content = index_template({
         title: 'Index',
         content: '※伝言を表示します。',
-        data
+        data,
+        cookie_data
     })
     res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'})
     res.write(content)
     res.end()
+}
+
+function setCookie(key: string, value: string, res: http.ServerResponse) {
+    //[]つけるとパラメータとして受け取ったkeyの中身がキーとなる
+    const encoded_cookie = qs.stringify({[key]: value})
+    res.setHeader('Set-Cookie', [encoded_cookie])
+
+}
+
+function getCookie(req: http.IncomingMessage) {
+    // cookieが存在するかどうかの判定 あれば取得、なければ空文字
+    const cookie_data = req.headers.cookie != undefined
+    ? req.headers.cookie : ''
+    // 生のcookieは;で区切られた文字列だから、;で分割して配列にする
+    const data = cookie_data.split(';')
+        .map(raw_cookie => qs.parse(raw_cookie.trim()))
+/*      reduce()    配列の結果をぐるぐる回しながら、一つのオブジェクトにまとめる
+        [ {msg: 'hogehoge'}, {hoge: 'fugafuga'} ]  → {msg: 'hogehoge', hoge: 'fugafuga'}
+        この形式にすることで、dataのmsg などアクセスしやすくする　
+        acc = 合成用の変数　cookie = 各要素が入る変数 */
+        .reduce((acc, cookie) => ({...acc, ...cookie}))
+    return data
 }
