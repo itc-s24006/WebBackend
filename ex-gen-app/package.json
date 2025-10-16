@@ -1,0 +1,36 @@
+{
+  "name": "ex-gen-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run '/dev:.+/'",
+    "dev:tsx": "tsx --watch --watch-path=./src ./src/bin/www.ts",
+    "dev:postcss": "postcss ./src/public/stylesheets/tailwind.css -o ./src/public/stylesheets/style.css -w",
+    "check": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.3",
+    "express": "^5.1.0",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.1",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "@tsconfig/node-lts": "^22.0.2",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.3",
+    "@types/http-errors": "^2.0.5",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "22",
+    "@types/pug": "^2.0.10",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.5.3"
+  }
+}

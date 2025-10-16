@@ -1,0 +1,11 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body(class='container mx-auto bg-white dark:bg-gray-950 dark:text-white')
+        header
+            h1(class='text-5xl/14 font-light mb-4')= title
+        main
+            block content
