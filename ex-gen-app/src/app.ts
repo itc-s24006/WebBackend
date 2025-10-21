@@ -5,6 +5,7 @@ import express, {NextFunction, Request, Response} from 'express'    // {}内は�
 import path from 'node:path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'     // HTTPリクエストのログを出力するためのライブラリ
+import session from 'express-session'
 
 // typescriptはビルド時にjsファイルにコンパイルされるから、拡張子は.jsで合ってる
 import indexRouter from './routes/index.js'
@@ -26,6 +27,15 @@ app.use(express.urlencoded({extended: false}))  // URLをエンコードする�
 app.use(cookieParser())
 // ↓ 指定したディレクトリ(public配下)を静的ファイルとしてそのまま返すやつ
 app.use(express.static(path.join(import.meta.dirname, 'public')))
+// セッションの設定
+app.use(session({
+    secret: 'oirugjlkvfdnouirgjlknvfioregjlfkvd',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 60 * 1000 // 1時間の有効期限
+    }
+}))
 // -----------------------------------------------------------------------------
 
 
