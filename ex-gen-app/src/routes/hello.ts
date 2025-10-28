@@ -31,7 +31,9 @@ router.get('/', async (req, res, next) => {
 router.get('/add', async (req, res, next) => {
     res.render('hello/add', {
         title: 'Hello/Add',
-        content: '新しいレコードを入力'
+        content: '新しいレコードを入力',
+        form: {name: '', mail: '', age: 0}, // 初期値設定
+        error: {}
     })
 })
 
@@ -87,6 +89,25 @@ router.post('/edit', async (req, res, _next) => {
         age,
         id,
     ])
+    res.redirect('/hello')
+})
+
+
+router.get('/delete', async (req, res, next) => {
+    const id = Number(req.query.id)
+    const result: MyData[] = await db.query(
+        'SELECT * FROM mydata WHERE id = ?', [id]
+    )
+    res.render('hello/delete', {
+        title: 'Hello/Delete',
+        content: `id = ${id} のレコードを削除`,
+        mydata: result[0]
+    })
+})
+
+router.post('/delete', async (req, res, next) => {
+    const id = Number(req.body.id)
+    await db.query('DELETE FROM mydata WHERE id = ?', [id])
     res.redirect('/hello')
 })
 
