@@ -19,11 +19,30 @@ interface MyData {
 }
 
 router.get('/', async (req, res, next) => {
-    const result = await db.query<MyData[]>('SELECT * FROM mydata')
-    res.render('hello', {
+    const result = await db.query<MyData[]>('SELECT * FROM mydata');
+    // .query() 実行結果が詰まった配列を返す
+
+    res.render('hello/index', {
         title: 'Hello!',
         content: result
     })
 })
+
+router.get('/add', async (req, res, next) => {
+    res.render('hello/add', {
+        title: 'Hello/Add',
+        content: '新しいレコードを入力'
+    })
+})
+
+// POSTアクセス時はレコードの追加をして一覧画面へリダイレクト
+router.post('/add', async (req, res, next) => {
+    const { name , mail, age } = req.body
+    await db.query('INSERT INTO mydata (name, mail, age) VALUES (?, ?, ?)', [
+        name, mail, age
+    ])
+    res.redirect('/hello')
+})
+
 
 export default router
