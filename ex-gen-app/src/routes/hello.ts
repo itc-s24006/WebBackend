@@ -39,11 +39,16 @@ router.get('/add', async (req, res, next) => {
 })
 
 // POSTアクセス時はレコードの追加をして一覧画面へリダイレクト
-router.post(
-    '/add',
+router.post('/add',
     check('name', 'NAMEは必ず入力してください。').notEmpty().escape(), // escape() サニタイズ
     check('mail', 'MAILは必ずメールアドレスを入力してください。').isEmail().escape(),
-    check('age', 'AGEは年齢(整数)を入力してください。').isInt().escape(),
+    check('age', 'AGEは年齢(整数)を入力してください。').isInt().custom(
+        async value => {
+            if (!(value >= 0 && value <= 120)) {
+                throw new Error('AGEは0以上120以下で入力してください。')
+            }
+        }
+        ).escape(),
     async (req, res, next) => {
         const result = validationResult(req)
         if (!result.isEmpty()) {
