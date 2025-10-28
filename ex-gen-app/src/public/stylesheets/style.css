@@ -232,6 +232,9 @@
   .block {
     display: block;
   }
+  .hidden {
+    display: none;
+  }
   .table {
     display: table;
   }
@@ -464,6 +467,11 @@
           border-color: color-mix(in oklab, var(--color-white) 10%, transparent);
         }
       }
+    }
+  }
+  .dark\:border-gray-600 {
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--color-gray-600);
     }
   }
   .dark\:border-gray-700 {

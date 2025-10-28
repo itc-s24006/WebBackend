@@ -44,6 +44,7 @@ router.post('/add', async (req, res, next) => {
     res.redirect('/hello')
 })
 
+
 router.get('/show', async (req, res, next) => {
     const id = Number(req.query.id)
     const result: MyData[] = await db.query(
@@ -53,6 +54,40 @@ router.get('/show', async (req, res, next) => {
         content: `id = ${id} のレコード`,
         mydata: result[0]
     })
+})
+
+
+router.get('/edit', async (req, res, next) => {
+    const id = Number(req.query.id)
+    const result: MyData[] = await db.query(
+        'SELECT * FROM mydata WHERE id = ?', [id]
+    )
+    res.render('hello/edit', {
+        title: 'Hello/edit',
+        content: `id = ${id} のレコードを編集`,
+        mydata: result[0]
+    })
+})
+
+router.post('/edit', async (req, res, next) => {
+    const {id, name, mail, age} = req.body
+    await db.query(
+        'UPDATE mydata SET name = ?, mail = ?, age = ? WHERE id = ?', [
+            name, mail, age, id
+        ])
+    res.redirect('/hello')
+})
+
+
+router.post('/edit', async (req, res, _next) => {
+    const { id, name, mail, age } = req.body
+    await db.query('UPDATE mydata SET name = ?, mail = ?, age = ? WHERE id = ?', [
+        name,
+        mail,
+        age,
+        id,
+    ])
+    res.redirect('/hello')
 })
 
 export default router
