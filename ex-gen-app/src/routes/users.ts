@@ -48,4 +48,10 @@ router.get('/find', async (req: Request<{}, {}, {}, UserParams>, res, next) => {
     })
 })
 
+router.get('/add', async (req, res, next) => {
+    res.render('users/add', {
+        title: 'Users/Add',
+    })
+})
+
 export default router
