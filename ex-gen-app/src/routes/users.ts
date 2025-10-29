@@ -18,6 +18,7 @@ interface UserParams {
     name?: string
     min?: string
     max?: string
+    mail?: string
 }
 
 router.get('/', async (req: Request<{}, {}, {}, UserParams>, res, next) => {
@@ -33,14 +34,12 @@ router.get('/', async (req: Request<{}, {}, {}, UserParams>, res, next) => {
 })
 
 router.get('/find', async (req: Request<{}, {}, {}, UserParams>, res, next) => {
-    const {name} = req.query
-    const min = parseInt(req.query.min || '')
-    const max = parseInt(req.query.max || '')
+    const {name, mail} = req.query
 
     const users= await prisma.user.findMany({where: {
-        AND: [
+        OR: [
             {nama: {contains: name}},
-            {age: {gte: min, lte: max}}
+            {mail: {contains: mail}}
         ]
         }})
     res.render('users/index', {
