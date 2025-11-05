@@ -7,7 +7,7 @@ block content
         +formGroup('password', 'pass','PASSWORD', user.pass)
         +formGroup('email', 'mail','MAIL', user.age)
         +formGroup('number', 'age','AGE', user.age)
-        button(type='submit').submit-button 作成
+        button(type='submit').submit-button 削除
 
 mixin formGroup(inputType, inputName, labelText, initialValue='', error=undefined)
     div(class=['relative', 'z-0', 'w-full', 'mb-5', 'group'])
