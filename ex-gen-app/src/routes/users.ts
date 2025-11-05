@@ -1,6 +1,6 @@
 import {Request, Router} from 'express'
 import {PrismaMariaDb} from "@prisma/adapter-mariadb";
-import {PrismaClient} from 'db';
+import {Prisma, PrismaClient} from 'db'; // Prismaはprismaオブジェクト
 
 const router = Router()
 const adapter = new PrismaMariaDb({
@@ -20,21 +20,32 @@ interface UserParams {
     max?: string
     mail?: string
     page?: string
+    prev?: string //戻る
+    next?: string //進む
 }
 
 const PAGE_SIZE = 3
 
 router.get('/', async (req: Request<{}, {}, {}, UserParams>, res, next) => {
-    // 0よりも大きければその数値を、そうでなければ1を設定
-    const page = req.query.page && parseInt(req.query.page) > 0 ?
-        parseInt(req.query.page) : 1
-    const users = await prisma.user.findMany({
-        orderBy: [
-            {id: 'asc'}
-        ],
-        skip: (page - 1) * PAGE_SIZE,
-        take: PAGE_SIZE,
-    })
+    const conditions: Prisma.UserFindManyArgs = {
+         orderBy: [
+             {id: 'asc'},
+         ],
+         take: PAGE_SIZE,
+    }
+    const {prev: prevCursor, next: nextCursor} = req.query //型名の指定じゃなくて変数名を指定してる。右側が新しい変数名
+    if (nextCursor) {
+        conditions.cursor = {id: parseInt(nextCursor)}
+        conditions.skip = 1 //カーソルの分をスキップ
+    }
+    if (prevCursor) {
+        // 戻るボタンのときはtakeをマイナスにすると逆順に遡って取ってきてくれる
+        conditions.take = -PAGE_SIZE
+        conditions.cursor = {id: parseInt(prevCursor)}
+        conditions.skip = 1 //カーソルの分をスキップ
+    }
+
+    const users = await prisma.user.findMany(conditions)
 
     res.render('users/index', {
         title: 'Users/Index',
