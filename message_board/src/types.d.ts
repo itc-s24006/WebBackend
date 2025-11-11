@@ -12,7 +12,7 @@ declare module 'express-session' {
 declare global {
   namespace Express {
     interface User {
-      id: number // 最低限必用
+      id: string // 最低限必用
       name: string // 使用頻度高いから追加
     }
   }

@@ -3,9 +3,13 @@ import express, {NextFunction, Request, Response} from 'express'
 import path from 'node:path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import session from 'express-session'
+
+import passport from './libs/auth.js' // 設定済みのpassportをインポート
 
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
+import boardRouter from './routes/board.js'
 
 const app = express()
 
@@ -18,9 +22,22 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(express.static(path.join(import.meta.dirname, 'public')))
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret key',
+  resave: false,
+  saveUninitialized: false,
+  name: 'mb-sid',
+  cookie: {
+    maxAge: 1000 * 60 * 60,
+    httpOnly: true,
+  }
+}))
+// session設定後に呼び出す↓
+app.use(passport.authenticate('session'))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
+app.use('/board', boardRouter)
 
 // catch 404 and forward to error handler
 app.use(async (req: Request, res: Response, next: NextFunction) => {
