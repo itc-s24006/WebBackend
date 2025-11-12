@@ -20,10 +20,12 @@
     --color-green-800: oklch(44.8% 0.119 151.328);
     --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-600: oklch(54.6% 0.245 262.881);
+    --color-gray-50: oklch(98.5% 0.002 247.839);
     --color-gray-300: oklch(87.2% 0.01 258.338);
     --color-gray-400: oklch(70.7% 0.022 261.325);
     --color-gray-500: oklch(55.1% 0.027 264.364);
     --color-gray-600: oklch(44.6% 0.03 256.802);
+    --color-gray-700: oklch(37.3% 0.034 259.733);
     --color-gray-900: oklch(21% 0.034 264.665);
     --color-gray-950: oklch(13% 0.028 261.692);
     --color-white: #fff;
@@ -31,6 +33,7 @@
     --breakpoint-sm: 40rem;
     --breakpoint-xl: 80rem;
     --container-sm: 24rem;
+    --container-xl: 36rem;
     --text-sm: 0.875rem;
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-3xl: 1.875rem;
@@ -213,6 +216,9 @@
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
   }
+  .mb-2 {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
   }
@@ -234,8 +240,21 @@
   .max-w-sm {
     max-width: var(--container-sm);
   }
+  .max-w-xl {
+    max-width: var(--container-xl);
+  }
+  .flex-row {
+    flex-direction: row;
+  }
   .place-content-center {
     place-content: center;
+  }
+  .space-x-2 {
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
   }
   .overflow-auto {
     overflow: auto;
@@ -254,6 +273,9 @@
   }
   .px-5 {
     padding-inline: calc(var(--spacing) * 5);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
   }
   .py-2\.5 {
     padding-block: calc(var(--spacing) * 2.5);
@@ -587,6 +609,61 @@ body {
     }
   }
 }
+.grow-input {
+  display: block;
+  flex-grow: 1;
+  border-radius: var(--radius-lg);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--color-gray-300);
+  background-color: var(--color-gray-50);
+  padding: calc(var(--spacing) * 2.5);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--color-gray-900);
+  &:focus {
+    border-color: var(--color-orange-500);
+  }
+  &:focus {
+    --tw-ring-color: var(--color-orange-500);
+  }
+  &:focus-visible {
+    outline-color: var(--color-orange-500);
+  }
+  &:focus-visible {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    border-color: var(--color-gray-600);
+  }
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-gray-700);
+  }
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-white);
+  }
+  @media (prefers-color-scheme: dark) {
+    &::placeholder {
+      color: var(--color-gray-400);
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    &:focus {
+      border-color: var(--color-orange-500);
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    &:focus {
+      --tw-ring-color: var(--color-orange-500);
+    }
+  }
+}
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-font-weight {
   syntax: "*";
   inherits: false;
@@ -722,6 +799,7 @@ body {
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
+      --tw-space-x-reverse: 0;
       --tw-font-weight: initial;
       --tw-tracking: initial;
       --tw-shadow: 0 0 #0000;

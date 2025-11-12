@@ -4,6 +4,8 @@ import path from 'node:path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 import session from 'express-session'
+import {RedisStore} from 'connect-redis'
+import {createClient} from 'redis'
 
 import passport from './libs/auth.js' // 設定済みのpassportをインポート
 
@@ -12,6 +14,12 @@ import usersRouter from './routes/users.js'
 import boardRouter from './routes/board.js'
 
 const app = express()
+
+// Redisクライアントの作成
+const redisClient = await createClient({url: process.env.REDIS_URL})
+  .on('error', (err: Error) => console.error(err))
+  .connect()
+const redisStore = new RedisStore({client: redisClient})
 
 // view engine setup
 app.set('views', path.join(import.meta.dirname, 'views'))
@@ -30,7 +38,8 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
-  }
+  },
+  store: redisStore, //valkeyをセッションストアとして使用
 }))
 // session設定後に呼び出す↓
 app.use(passport.authenticate('session'))
