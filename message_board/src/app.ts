@@ -6,6 +6,7 @@ import logger from 'morgan'
 import session from 'express-session'
 import {RedisStore} from 'connect-redis'
 import {createClient} from 'redis'
+import {cdate} from 'cdate' // 日付操作ライブラリ
 
 import passport from './libs/auth.js' // 設定済みのpassportをインポート
 
@@ -43,6 +44,11 @@ app.use(session({
 }))
 // session設定後に呼び出す↓
 app.use(passport.authenticate('session'))
+
+// 必要な情報に調整して表示する関数
+app.locals.dateFormat = (dt:Date) => cdate(dt)
+  .tz('Asia/Tokyo')
+  .format('YYYY/MM/DD HH:mm:ss.SSS')
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)

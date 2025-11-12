@@ -14,6 +14,7 @@
     "@prisma/adapter-mariadb": "^6.18.0",
     "@prisma/client": "^6.19.0",
     "argon2": "^0.44.0",
+    "cdate": "^0.0.7",
     "connect-redis": "^9.0.0",
     "cookie-parser": "^1.4.7",
     "db": "link:src/generated/prisma",

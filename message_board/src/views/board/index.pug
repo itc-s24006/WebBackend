@@ -1,4 +1,6 @@
 extends ../layout
+include MessageList
+include Pager
 
 prepend head
  - const title = 'Board'
@@ -14,3 +16,5 @@ block content
       input(name='message' placeholder='メッセージ' autocomplete='off').grow-input
       button(type='submit').submit-button 送信
 
+  +MessageList(posts)
+  +Pager(page, maxPage, '/board')
