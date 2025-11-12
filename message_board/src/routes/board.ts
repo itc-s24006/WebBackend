@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import prisma from "../libs/db.js";
+import {check, validationResult} from "express-validator";
 
 const router = Router()
 const ITEMS_PER_PAGE = 5 // 1ページあたりの表示件数
@@ -50,5 +51,21 @@ router.get('/{:page}', async (req, res) => {
     maxPage
   })
 })
+
+router.post('/post',
+  check('message').notEmpty(),
+  async (req, res) => {
+    const result = validationResult(req)
+    if (result.isEmpty()) {
+      // エラーが空 = チェック通った
+      await prisma.post.create({
+        data: {
+          userId: req.user?.id as string,
+          message: req.body.message
+        }
+      })
+    }
+    return res.redirect('/board')
+  })
 
 export default router

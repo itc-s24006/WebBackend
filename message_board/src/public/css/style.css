@@ -699,13 +699,13 @@ body {
   line-height: var(--tw-leading, var(--text-sm--line-height));
   color: var(--color-gray-900);
   &:focus {
-    border-color: var(--color-orange-500);
+    border-color: var(--color-green-500);
   }
   &:focus {
-    --tw-ring-color: var(--color-orange-500);
+    --tw-ring-color: var(--color-green-500);
   }
   &:focus-visible {
-    outline-color: var(--color-orange-500);
+    outline-color: var(--color-green-500);
   }
   &:focus-visible {
     --tw-outline-style: none;
@@ -727,12 +727,12 @@ body {
   }
   @media (prefers-color-scheme: dark) {
     &:focus {
-      border-color: var(--color-orange-500);
+      border-color: var(--color-green-500);
     }
   }
   @media (prefers-color-scheme: dark) {
     &:focus {
-      --tw-ring-color: var(--color-orange-500);
+      --tw-ring-color: var(--color-green-500);
     }
   }
 }
