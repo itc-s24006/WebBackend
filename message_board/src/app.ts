@@ -14,6 +14,8 @@ import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import boardRouter from './routes/board.js'
 
+import boardApiRouter from './routes/api/board.js'
+
 const app = express()
 
 // Redisクライアントの作成
@@ -53,6 +55,8 @@ app.locals.dateFormat = (dt:Date) => cdate(dt)
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/board', boardRouter)
+
+app.use('/api/board', boardApiRouter)
 
 // catch 404 and forward to error handler
 app.use(async (req: Request, res: Response, next: NextFunction) => {
